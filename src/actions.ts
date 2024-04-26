@@ -8,6 +8,7 @@ export interface Post {
 export const ADD_POST = 'ADD_POST';
 export const CLEAR_POSTS = 'CLEAR_POSTS';
 export const UPDATE_POST = 'UPDATE_POST';
+export const DELETE_POST = 'DELETE_POST'
 
 interface AddPostAction {
   type: typeof ADD_POST;
@@ -23,7 +24,12 @@ interface UpdatePostAction {
   payload: Post;
 }
 
-export type PostActionTypes = AddPostAction | ClearPostsAction | UpdatePostAction;
+interface DeletePostAction {
+  type: typeof DELETE_POST;
+  payload: string; // Post ID
+}
+
+export type PostActionTypes = AddPostAction | ClearPostsAction | UpdatePostAction | DeletePostAction;
 
 export const addPost = (post: Post): AddPostAction => ({
   type: ADD_POST,
@@ -37,4 +43,9 @@ export const clearPosts = (): ClearPostsAction => ({
 export const updatePost = (post: Post): UpdatePostAction => ({
   type: UPDATE_POST,
   payload: post,
+});
+
+export const deletePost = (postId: string): DeletePostAction => ({
+  type: DELETE_POST,
+  payload: postId,
 });

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Post, addPost, clearPosts, updatePost } from "../actions";
+import { Post, addPost, clearPosts, deletePost, updatePost } from "../actions";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 
@@ -74,6 +74,10 @@ const MainScreen = () => {
       setEditedPostBody("");
    };
 
+   const handleDelete = (postId: string) => {
+      dispatch(deletePost(postId));
+   };
+
    return (
       <>
       <div>
@@ -82,8 +86,10 @@ const MainScreen = () => {
          {posts.map((post: Post) => (
             <li key={post.id}>
                ID: {post.id}, UserID: {post.userId}: <b>{post.title}</b> - {post.body}
-               {/* Edit button to each post item */}
+               {/* Edit button */}
                <button onClick={() => handleEdit(post)}>Edit</button>
+               {/* Delete button */}
+               <button onClick={() => handleDelete(post.id)}>Delete</button>
             </li>
          ))}
          </ul>
@@ -100,7 +106,7 @@ const MainScreen = () => {
             <button type="submit">Add Post</button>
          </form>
       </div>
-      {/* Modal or form for editing a post */}
+      {/* Form for editing a post */}
       {editingPost && (
          <div>
             <h3>Edit Post</h3>
