@@ -5,11 +5,10 @@ export interface Post {
   body: string;
 }
 
-// Define action types as string constants
 export const ADD_POST = 'ADD_POST';
 export const CLEAR_POSTS = 'CLEAR_POSTS';
+export const UPDATE_POST = 'UPDATE_POST';
 
-// Define action interfaces
 interface AddPostAction {
   type: typeof ADD_POST;
   payload: Post;
@@ -19,10 +18,13 @@ interface ClearPostsAction {
   type: typeof CLEAR_POSTS;
 }
 
-// Define a union type of all action types
-export type PostActionTypes = AddPostAction | ClearPostsAction;
+interface UpdatePostAction {
+  type: typeof UPDATE_POST;
+  payload: Post;
+}
 
-// Define action creators
+export type PostActionTypes = AddPostAction | ClearPostsAction | UpdatePostAction;
+
 export const addPost = (post: Post): AddPostAction => ({
   type: ADD_POST,
   payload: post,
@@ -30,4 +32,9 @@ export const addPost = (post: Post): AddPostAction => ({
 
 export const clearPosts = (): ClearPostsAction => ({
   type: CLEAR_POSTS,
+});
+
+export const updatePost = (post: Post): UpdatePostAction => ({
+  type: UPDATE_POST,
+  payload: post,
 });

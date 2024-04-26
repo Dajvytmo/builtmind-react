@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Post, addPost, clearPosts } from "../actions";
+import { Post, addPost, clearPosts, updatePost } from "../actions";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 
@@ -10,9 +10,13 @@ const MainScreen = () => {
 
    const dispatch = useAppDispatch()
    const posts = useAppSelector((state: RootState) => state.posts);
-   
+
    const [newPostTitle, setNewPostTitle] = useState("");
    const [newPostBody, setNewPostBody] = useState("");
+
+   const [editingPost, setEditingPost] = useState<Post | null>(null);
+   const [editedPostTitle, setEditedPostTitle] = useState("");
+   const [editedPostBody, setEditedPostBody] = useState("");
 
    useEffect(() => {
       axios.get(`https://jsonplaceholder.typicode.com/posts`)
@@ -45,6 +49,30 @@ const MainScreen = () => {
       setNewPostBody("");
    };
 
+   const handleEdit = (post: Post) => {
+      // Set the editing Post state to the post being edited
+      setEditingPost(post);
+      setEditedPostTitle(post.title);
+      setEditedPostBody(post.body);
+   };
+   
+   const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      // Create a new post object with the edited data
+      const updatedPost: Post = {
+         ...editingPost!,
+         title: editedPostTitle,
+         body: editedPostBody
+      };
+     
+      dispatch(updatePost(updatedPost));
+      
+      // Reset the editing state
+      setEditingPost(null);
+      setEditedPostTitle("");
+      setEditedPostBody("");
+   };
 
    return (
       <>
@@ -52,7 +80,11 @@ const MainScreen = () => {
          <h3>Posts</h3>
          <ul>
          {posts.map((post: Post) => (
-            <li>ID: {post.id}, UserID: {post.userId}: <b>{post.title}</b> - {post.body}</li>
+            <li key={post.id}>
+               ID: {post.id}, UserID: {post.userId}: <b>{post.title}</b> - {post.body}
+               {/* Edit button to each post item */}
+               <button onClick={() => handleEdit(post)}>Edit</button>
+            </li>
          ))}
          </ul>
       </div>
@@ -68,6 +100,21 @@ const MainScreen = () => {
             <button type="submit">Add Post</button>
          </form>
       </div>
+      {/* Modal or form for editing a post */}
+      {editingPost && (
+         <div>
+            <h3>Edit Post</h3>
+            <form onSubmit={handleEditSubmit}>
+               <label>Title:</label>
+               <input type="text" value={editedPostTitle} onChange={(e) => setEditedPostTitle(e.target.value)} />
+               <br />
+               <label>Body:</label>
+               <textarea value={editedPostBody} onChange={(e) => setEditedPostBody(e.target.value)} />
+               <br />
+               <button type="submit">Save Changes</button>
+            </form>
+         </div>
+      )}
       </>
    )
 }

@@ -1,4 +1,4 @@
-import { ADD_POST, CLEAR_POSTS, Post, PostActionTypes } from "./actions";
+import { ADD_POST, CLEAR_POSTS, Post, PostActionTypes, UPDATE_POST } from "./actions";
 
 interface PostsState {
    posts: Post[];
@@ -19,6 +19,13 @@ interface PostsState {
         return {
           ...state,
           posts: [],
+        };
+      case UPDATE_POST:
+        return {
+          ...state,
+          posts: state.posts.map(post =>
+            post.id === action.payload.id ? action.payload : post
+          ),
         };
       default:
         return state;
